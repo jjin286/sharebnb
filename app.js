@@ -9,6 +9,7 @@ const User = require("./models/User");
 const Listing = require("./models/Listing");
 const Booking = require("./models/Booking");
 const db = require('./db');
+const sequelize = require('./db');
 // const aws = require("aws-sdk")
 
 const BUCKET_NAME = process.env.BUCKET_NAME;
@@ -54,9 +55,15 @@ const upload = multer({ storage: storage });
 const { NotFoundError } = require("./expressError");
 const app = new express();
 
-User.sync();
-Listing.sync();
-Booking.sync();
+// User.sync();
+// Listing.sync();
+// Booking.sync();
+
+const syncModels = async () => {
+
+  await sequelize.sync({ force: false });
+};
+syncModels();
 
 // allow both form-encoded and json body parsing
 app.use(express.json());
