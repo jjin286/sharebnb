@@ -5,12 +5,14 @@
 
 const express = require("express");
 const cors = require("cors");
+const { sequelize } = require('./db');
 // const { authenticateJWT } = require("./middleware/auth");
 // const nunjucks = require('nunjucks');
 
 const { NotFoundError } = require("./expressError");
 const app = new express();
 
+sequelize.sync({ force: true });
 // nunjucks.configure("templates", {
 //   autoescape: true,
 //   express: app,
