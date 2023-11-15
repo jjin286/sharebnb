@@ -39,7 +39,10 @@ const Booking = sequelize.define('Booking', {
     type: DataTypes.DECIMAL(10, 2),
     allowNull: false
   }
-}, { tableName: "bookings" });
+}, {
+  tableName: "bookings",
+  timestamps: false
+});
 
 
 // sequelize.sync();

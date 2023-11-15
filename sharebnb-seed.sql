@@ -1,27 +1,21 @@
-INSERT INTO users (username, password, email, first_name, last_name, is_host, "createdAt","updatedAt")
+INSERT INTO users (username, password, email, first_name, last_name, is_host)
 VALUES ('host1',
 'password',
 'host1@gmail.com',
 'Jon',
 'Snow',
- TRUE,
- NOW(),
- NOW()
-
+ TRUE
 );
-INSERT INTO users (username, password, email, first_name, last_name, is_host, "createdAt","updatedAt")
+INSERT INTO users (username, password, email, first_name, last_name, is_host)
 VALUES ('guest',
 'password',
 'guest@gmail.com',
 'John',
 'Wick',
- FALSE,
- NOW(),
- NOW()
-
+ FALSE
 );
 
-INSERT INTO listings (id, title, description, address, city, state, zipcode, price_per_day,image, host_id, "createdAt", "updatedAt")
+INSERT INTO listings (id, title, description, address, city, state, zipcode, price_per_day,image, host_id)
 VALUES ('1',
 'cabin in the woods',
 'really nice, come to visit',
@@ -31,12 +25,10 @@ VALUES ('1',
 '11111',
 122.35,
 'https://share-bb.s3.us-east-2.amazonaws.com/S3.png',
-'host1',
- NOW(),
- NOW()
+'host1'
 );
 
-INSERT INTO listings (id, title, description, address, city, state, zipcode, price_per_day,image, host_id, "createdAt", "updatedAt")
+INSERT INTO listings (id, title, description, address, city, state, zipcode, price_per_day,image, host_id)
 VALUES ('2',
 'beach house in hawaii',
 'fancy steak and wine',
@@ -46,7 +38,5 @@ VALUES ('2',
 '23465',
 1.35,
 'https://share-bb.s3.us-east-2.amazonaws.com/S3.png',
-'host1',
- NOW(),
- NOW()
+'host1'
 );

@@ -31,7 +31,10 @@ const User = sequelize.define('User', {
     type: DataTypes.BOOLEAN,
     allowNull: false
   }
-}, { tableName: "users" });
+},{
+  tableName: "users",
+  timestamps: false
+});
 
 // sequelize.sync();
 

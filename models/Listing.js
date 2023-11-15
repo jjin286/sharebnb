@@ -50,7 +50,11 @@ const Listing = sequelize.define('Listing', {
     references: { model: User, key: "username" },
     allowNull: false
   }
-}, { tableName: "listings" });
+},
+{
+  tableName: "listings",
+  timestamps: false
+});
 
 //One to many
 User.hasMany(Listing, {
