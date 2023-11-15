@@ -40,6 +40,10 @@ const Listing = sequelize.define('Listing', {
     type: DataTypes.DECIMAL(10, 2),
     allowNull: false
   },
+  image: {
+    type: DataTypes.STRING(150),
+    allowNull: false
+  },
   host_id: {
     type: DataTypes.STRING(50),
     references: { model: User, key: "username" },
@@ -47,6 +51,6 @@ const Listing = sequelize.define('Listing', {
   }
 }, { tableName: "listings" });
 
-sequelize.sync();
+// sequelize.sync();
 
 module.exports = Listing;

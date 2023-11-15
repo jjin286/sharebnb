@@ -5,18 +5,53 @@
 
 const express = require("express");
 const cors = require("cors");
-const { sequelize } = require('./db');
-// const { authenticateJWT } = require("./middleware/auth");
-// const nunjucks = require('nunjucks');
+const User = require("./models/User");
+const Listing = require("./models/Listing");
+const Booking = require("./models/Booking");
+const db  = require('./db');
+// const aws = require("aws-sdk")
+
+const BUCKET_NAME = process.env.BUCKET_NAME;
+const BUCKET_REGION = process.env.BUCKET_REGION;
+const ACCESS_KEY = process.env.ACCESS_KEY;
+const SECRET_ACCESS_KEY = process.env.SECRET_ACCESS_KEY;
+
+const { S3Client } = require('@aws-sdk/client-s3')
+const multer = require('multer')
+const multerS3 = require('multer-s3')
+const s3 = new S3Client({
+  credentials: {
+    accessKeyId: ACCESS_KEY,
+    secretAccessKey: SECRET_ACCESS_KEY
+  },
+  region: BUCKET_REGION
+})
+
+// aws.config.update({
+//   accessKeyId: ACCESS_KEY,
+//   secretAccessKey: SECRET_ACCESS_KEY,
+//   region: BUCKET_REGION,
+// });
+
+const upload = multer({
+  storage: multerS3({
+    s3: s3,
+    bucket: BUCKET_NAME,
+    metadata: function (req, file, cb) {
+      cb(null, {fieldName: file.fieldname});
+    },
+    key: function (req, file, cb) {
+      cb(null, Date.now().toString())
+    }
+  })
+})
 
 const { NotFoundError } = require("./expressError");
 const app = new express();
 
-sequelize.sync({ force: true });
-// nunjucks.configure("templates", {
-//   autoescape: true,
-//   express: app,
-// });
+User.sync();
+Listing.sync();
+Booking.sync();
 
 // allow both form-encoded and json body parsing
 app.use(express.json());
@@ -24,6 +59,25 @@ app.use(express.urlencoded());
 
 // allow connections to all routes from any browser
 app.use(cors());
+
+
+app.post('/upload', upload.single("image"), function(req, res, next) {
+  if (req.file) {
+    res.send("Single file uploaded successfully");
+  } else {
+    res.status(400).send("Please upload a valid image");
+  }
+})
+
+// app.post('/upload', upload.single('profile-file'), function (req, res, next) {
+//   // req.file is the `profile-file` file
+//   // req.body will hold the text fields, if there were any
+//   console.log(JSON.stringify(req.file))
+//   var response = '<a href="/">Home</a><br>'
+//   response += "Files uploaded successfully.<br>"
+//   response += `<img src="${req.file.path}" /><br>`
+//   return res.send(response)
+// })
 
 // get auth token for all routes
 // app.use(authenticateJWT);

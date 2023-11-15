@@ -23,23 +23,23 @@ const Booking = sequelize.define('Booking', {
     allowNull: false
   },
   check_in_date: {
-    type: DATE,
+    type: DataTypes.DATE,
     allowNull: false
   },
   check_out_date: {
-    type: DATE,
+    type: DataTypes.DATE,
     allowNull: false
   },
   date_time_booked: {
-    type: DATE,
+    type: DataTypes.DATE,
     allowNull: false
   },
   price: {
     type: DataTypes.DECIMAL(10, 2),
     allowNull: false
   }
-}, { tableName: "booking" });
+}, { tableName: "bookings" });
 
-sequelize.sync();
+// sequelize.sync();
 
 module.exports = Booking;
