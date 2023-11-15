@@ -8,7 +8,7 @@ const cors = require("cors");
 const User = require("./models/User");
 const Listing = require("./models/Listing");
 const Booking = require("./models/Booking");
-const db  = require('./db');
+const db = require('./db');
 // const aws = require("aws-sdk")
 
 const BUCKET_NAME = process.env.BUCKET_NAME;
@@ -16,19 +16,21 @@ const BUCKET_REGION = process.env.BUCKET_REGION;
 const ACCESS_KEY = process.env.ACCESS_KEY;
 const SECRET_ACCESS_KEY = process.env.SECRET_ACCESS_KEY;
 
-const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3')
-const multer = require('multer')
-const multerS3 = require('multer-s3')
+const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
+const multer = require('multer');
+const multerS3 = require('multer-s3');
 const s3 = new S3Client({
   credentials: {
     accessKeyId: ACCESS_KEY,
     secretAccessKey: SECRET_ACCESS_KEY
   },
   region: BUCKET_REGION
-})
+});
 
 const storage = multer.memoryStorage();
-const upload = multer({storage: storage});
+const upload = multer({ storage: storage });
+
+
 
 // aws.config.update({
 //   accessKeyId: ACCESS_KEY,
@@ -64,21 +66,24 @@ app.use(express.urlencoded());
 app.use(cors());
 
 
-app.post('/upload', upload.single("image"), async function(req, res, next) {
-  req.file.buffer
+app.post('/upload', upload.single("image"), async function (req, res, next) {
+  req.file.buffer;
 
   const params = {
     Bucket: BUCKET_NAME,
     Key: req.file.originalname,
     Body: req.file.buffer,
     ContentType: req.file.mimetype
-  }
+  };
 
   const command = new PutObjectCommand(params);
   const result = await s3.send(command);
 
+  //TODO: implement saving image url to database
+  console.log(`https://${BUCKET_NAME}.s3.${BUCKET_REGION}.amazonaws.com/${req.file.originalname}`);
+
   res.json(result);
-})
+});
 
 // get auth token for all routes
 // app.use(authenticateJWT);
