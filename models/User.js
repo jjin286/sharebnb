@@ -1,8 +1,9 @@
 "use strict";
 
 const { Sequelize, DataTypes, Model } = require('sequelize');
-const { sequelize } = require('../db');
+const sequelize = require('../db');
 
+//TODO:reserch if need to rename table
 const User = sequelize.define('User', {
   username: {
     type: DataTypes.STRING(50),
@@ -30,6 +31,8 @@ const User = sequelize.define('User', {
     type: DataTypes.BOOLEAN,
     allowNull: false
   }
-})
+}, { tableName: "users" });
 
-module.exports = User
+sequelize.sync();
+
+module.exports = User;
