@@ -16,7 +16,7 @@ const BUCKET_REGION = process.env.BUCKET_REGION;
 const ACCESS_KEY = process.env.ACCESS_KEY;
 const SECRET_ACCESS_KEY = process.env.SECRET_ACCESS_KEY;
 
-const { S3Client } = require('@aws-sdk/client-s3')
+const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3')
 const multer = require('multer')
 const multerS3 = require('multer-s3')
 const s3 = new S3Client({
@@ -27,24 +27,27 @@ const s3 = new S3Client({
   region: BUCKET_REGION
 })
 
+const storage = multer.memoryStorage();
+const upload = multer({storage: storage});
+
 // aws.config.update({
 //   accessKeyId: ACCESS_KEY,
 //   secretAccessKey: SECRET_ACCESS_KEY,
 //   region: BUCKET_REGION,
 // });
 
-const upload = multer({
-  storage: multerS3({
-    s3: s3,
-    bucket: BUCKET_NAME,
-    metadata: function (req, file, cb) {
-      cb(null, {fieldName: file.fieldname});
-    },
-    key: function (req, file, cb) {
-      cb(null, Date.now().toString())
-    }
-  })
-})
+// const upload = multer({
+//   storage: multerS3({
+//     s3: s3,
+//     bucket: BUCKET_NAME,
+//     metadata: function (req, file, cb) {
+//       cb(null, {fieldName: file.originalname});
+//     },
+//     key: function (req, file, cb) {
+//       cb(null, Date.now().toString())
+//     }
+//   })
+// })
 
 const { NotFoundError } = require("./expressError");
 const app = new express();
@@ -61,23 +64,21 @@ app.use(express.urlencoded());
 app.use(cors());
 
 
-app.post('/upload', upload.single("image"), function(req, res, next) {
-  if (req.file) {
-    res.send("Single file uploaded successfully");
-  } else {
-    res.status(400).send("Please upload a valid image");
-  }
-})
+app.post('/upload', upload.single("image"), async function(req, res, next) {
+  req.file.buffer
 
-// app.post('/upload', upload.single('profile-file'), function (req, res, next) {
-//   // req.file is the `profile-file` file
-//   // req.body will hold the text fields, if there were any
-//   console.log(JSON.stringify(req.file))
-//   var response = '<a href="/">Home</a><br>'
-//   response += "Files uploaded successfully.<br>"
-//   response += `<img src="${req.file.path}" /><br>`
-//   return res.send(response)
-// })
+  const params = {
+    Bucket: BUCKET_NAME,
+    Key: req.file.originalname,
+    Body: req.file.buffer,
+    ContentType: req.file.mimetype
+  }
+
+  const command = new PutObjectCommand(params);
+  const result = await s3.send(command);
+
+  res.json(result);
+})
 
 // get auth token for all routes
 // app.use(authenticateJWT);
