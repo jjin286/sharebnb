@@ -43,13 +43,37 @@ const Listing = sequelize.define('Listing', {
   image: {
     type: DataTypes.STRING(150),
     allowNull: false
-  },
+  }
+  ,
   host_id: {
     type: DataTypes.STRING(50),
     references: { model: User, key: "username" },
     allowNull: false
   }
 }, { tableName: "listings" });
+
+//One to many
+User.hasMany(Listing, {
+  foreignKey: "host_id",
+  sourceKey: "username"
+});
+Listing.belongsTo(User, {
+  foreignKey: "host_id"
+});
+
+//Many to many
+User.belongsToMany(Listing, {
+  as: "listing",
+  through: "bookings",
+  foreignKey: "guest_id",
+  sourceKey: "username"
+});
+Listing.belongsToMany(User, {
+  as: "user",
+  through: "bookings",
+  foreignKey: "listing_id",
+  sourceKey: "id"
+})
 
 // sequelize.sync();
 

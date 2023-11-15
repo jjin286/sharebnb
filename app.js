@@ -10,6 +10,7 @@ const Listing = require("./models/Listing");
 const Booking = require("./models/Booking");
 const db = require('./db');
 const sequelize = require('./db');
+const listingRoutes = require('./routes/listings');
 // const aws = require("aws-sdk")
 
 const BUCKET_NAME = process.env.BUCKET_NAME;
@@ -72,6 +73,7 @@ app.use(express.urlencoded());
 // allow connections to all routes from any browser
 app.use(cors());
 
+app.use("/listings", listingRoutes);
 
 app.post('/upload', upload.single("image"), async function (req, res, next) {
   req.file.buffer;

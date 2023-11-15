@@ -11,7 +11,8 @@ const Booking = sequelize.define('Booking', {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true
-  },
+  }
+  ,
   guest_id: {
     type: DataTypes.STRING(50),
     references: { model: User, key: "username" },
@@ -39,6 +40,7 @@ const Booking = sequelize.define('Booking', {
     allowNull: false
   }
 }, { tableName: "bookings" });
+
 
 // sequelize.sync();
 
