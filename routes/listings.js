@@ -1,10 +1,11 @@
 "use strict";
 
 const express = require("express");
-const { BadRequestError, NotFoundError } = require("../expressError");
+const { BadRequestError, NotFoundError, UnauthorizedError } = require("../expressError");
 const Listing = require("../models/Listing");
 const User = require("../models/User");
 const Booking = require("../models/Booking");
+const {ensureLoggedIn, ensureHost} = require("../middleware/auth");
 
 // ***************************************************************** S3 AWS
 const BUCKET_NAME = process.env.BUCKET_NAME;
@@ -52,7 +53,7 @@ router.get("/:id", async function (req, res, next) {
   return res.json({ listing });
 });
 
-router.post("/add", upload.single("image"), async function (req, res, next) {
+router.post("/add", ensureHost, upload.single("image"), async function (req, res, next) {
   req.file.buffer;
 
   const params = {
@@ -87,7 +88,7 @@ router.post("/add", upload.single("image"), async function (req, res, next) {
     state,
     zipcode,
     price_per_day,
-    host_id,
+    host_id: res.locals.user.username,
     image: `https://${BUCKET_NAME}.s3.${BUCKET_REGION}.amazonaws.com/${req.file.originalname}`
   });
 
@@ -95,9 +96,14 @@ router.post("/add", upload.single("image"), async function (req, res, next) {
 });
 
 //TODO: doc
-router.patch("/:id", async function (req, res, next) {
+
+router.patch("/:id", ensureHost, async function (req, res, next) {
 
   const listing = await Listing.findByPk(req.params.id);
+
+  if(listing.host_id !== res.locals.user.username){
+    throw new UnauthorizedError();
+  }
 
   await listing.update(req.body);
   await listing.save();
@@ -108,8 +114,13 @@ router.patch("/:id", async function (req, res, next) {
 
 
 //TODO:doc
-router.delete("/:id", async function (req, res, next) {
+router.delete("/:id", ensureHost, async function (req, res, next) {
   const listing = await Listing.findByPk(req.params.id);
+
+  if(listing.host_id !== res.locals.user.username){
+    throw new UnauthorizedError();
+  }
+
   await Booking.destroy({ where: { listing_id: req.params.id } });
 
   await listing.destroy();
