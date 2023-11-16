@@ -10,6 +10,7 @@ const sequelize = require('./db');
 const listingRoutes = require('./routes/listings');
 const authRoutes = require("./routes/auth");
 const bookingRoutes = require('./routes/bookings');
+const userRoutes = require("./routes/users");
 
 const { authenticateJWT } = require("./middleware/auth");
 
@@ -41,6 +42,7 @@ app.use(authenticateJWT);
 app.use("/listings", listingRoutes);
 app.use("/auth", authRoutes);
 app.use("/bookings", bookingRoutes);
+app.use("/users", userRoutes);
 
 // const authRoutes = require("./routes/auth");
 // const userRoutes = require("./routes/users");

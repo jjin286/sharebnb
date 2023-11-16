@@ -6,6 +6,7 @@ const Listing = require("../models/Listing");
 const User = require("../models/User");
 const Booking = require("../models/Booking");
 const {ensureLoggedIn, ensureHost} = require("../middleware/auth");
+const { Op} = require("sequelize");
 
 // ***************************************************************** S3 AWS
 const BUCKET_NAME = process.env.BUCKET_NAME;
@@ -32,7 +33,19 @@ const router = new express.Router();
 
 /**TODO: */
 router.get("/", async function (req, res, next) {
-  const listings = await Listing.findAll({ include: User });
+  const query = req.query.search;
+  let listings;
+
+  if(query){
+    listings = await Listing.findAll({
+      where: {
+        title: { [Op.iLike]: `%${query}%`}
+      }
+    });
+  } else {
+    listings = await Listing.findAll();
+  }
+
 
   //Use if host should be included in listing
   // const listings = await Listing.findAll({include: User});
@@ -104,7 +117,7 @@ router.patch("/:id", ensureHost, async function (req, res, next) {
   if(listing.host_id !== res.locals.user.username){
     throw new UnauthorizedError();
   }
-
+  //FIXME: Potential bugs happen if invalid body
   await listing.update(req.body);
   await listing.save();
 

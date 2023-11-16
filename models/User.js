@@ -1,6 +1,7 @@
 "use strict";
 
 const { Sequelize, DataTypes, Model } = require('sequelize');
+const Booking = require("./Booking");
 const sequelize = require('../db');
 
 //TODO:reserch if need to rename table
@@ -34,6 +35,15 @@ const User = sequelize.define('User', {
 },{
   tableName: "users",
   timestamps: false
+});
+
+//One to many
+User.hasMany(Booking, {
+  foreignKey: "guest_id",
+  sourceKey: "username"
+});
+Booking.belongsTo(User, {
+  foreignKey: "guest_id"
 });
 
 // sequelize.sync();
