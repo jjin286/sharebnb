@@ -33,7 +33,8 @@ const Booking = sequelize.define('Booking', {
   },
   date_time_booked: {
     type: DataTypes.DATE,
-    allowNull: false
+    allowNull: false,
+    defaultValue: DataTypes.NOW
   },
   price: {
     type: DataTypes.DECIMAL(10, 2),

@@ -9,8 +9,9 @@ const sequelize = require('./db');
 
 const listingRoutes = require('./routes/listings');
 const authRoutes = require("./routes/auth");
+const bookingRoutes = require('./routes/bookings');
 
-const {authenticateJWT} = require("./middleware/auth");
+const { authenticateJWT } = require("./middleware/auth");
 
 const { NotFoundError } = require("./expressError");
 const app = new express();
@@ -39,6 +40,7 @@ app.use(authenticateJWT);
 
 app.use("/listings", listingRoutes);
 app.use("/auth", authRoutes);
+app.use("/bookings", bookingRoutes);
 
 // const authRoutes = require("./routes/auth");
 // const userRoutes = require("./routes/users");
