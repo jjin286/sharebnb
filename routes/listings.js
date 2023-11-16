@@ -5,7 +5,7 @@ const { BadRequestError, NotFoundError, UnauthorizedError } = require("../expres
 const Listing = require("../models/Listing");
 const User = require("../models/User");
 const Booking = require("../models/Booking");
-const {ensureLoggedIn, ensureHost} = require("../middleware/auth");
+const {ensureLoggedIn, ensureHost, authenticateJWT} = require("../middleware/auth");
 const { Op} = require("sequelize");
 
 // ***************************************************************** S3 AWS
@@ -66,8 +66,8 @@ router.get("/:id", async function (req, res, next) {
   return res.json({ listing });
 });
 
-router.post("/add",  upload.single("image"), async function (req, res, next) {
-  console.log("body", req.body);
+router.post("/add", upload.single("image"), async function (req, res, next) {
+  console.log("res.locals", res.locals);
   console.log("file", req.file);
   req.file.buffer;
 
@@ -90,11 +90,9 @@ router.post("/add",  upload.single("image"), async function (req, res, next) {
     city,
     state,
     zipcode,
-    price_per_day,
-    host_id } = req.body;
+    price_per_day} = req.body;
 
-  console.log('Body', req.body);
-  console.log("POST Username", res.locals.user)
+
 
   const listing = await Listing.create({
     title,

@@ -15,10 +15,8 @@ function authenticateJWT(req, res, next) {
   const authHeader = req.headers?.authorization;
   if (authHeader) {
     const token = authHeader.replace(/^[Bb]earer /, "").trim();
-
     try {
       res.locals.user = jwt.verify(token, SECRET_KEY);
-      console.log("Auth JWT: ",res.locals.user)
     } catch (err) {
       /* ignore invalid tokens (but don't store user!) */
     }

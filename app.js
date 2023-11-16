@@ -39,8 +39,8 @@ app.use(authenticateJWT);
 
 /** routes */
 
-app.use("/listings", listingRoutes);
 app.use("/auth", authRoutes);
+app.use("/listings", listingRoutes);
 app.use("/bookings", bookingRoutes);
 app.use("/users", userRoutes);
 
