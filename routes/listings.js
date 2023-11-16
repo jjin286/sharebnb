@@ -66,7 +66,9 @@ router.get("/:id", async function (req, res, next) {
   return res.json({ listing });
 });
 
-router.post("/add", ensureHost, upload.single("image"), async function (req, res, next) {
+router.post("/add",  upload.single("image"), async function (req, res, next) {
+  console.log("body", req.body);
+  console.log("file", req.file);
   req.file.buffer;
 
   const params = {
@@ -92,6 +94,7 @@ router.post("/add", ensureHost, upload.single("image"), async function (req, res
     host_id } = req.body;
 
   console.log('Body', req.body);
+  console.log("POST Username", res.locals.user)
 
   const listing = await Listing.create({
     title,

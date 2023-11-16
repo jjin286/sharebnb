@@ -43,7 +43,7 @@ function ensureLoggedIn(req, res, next) {
  */
 
 function ensureHost(req, res, next) {
-  if (res.locals.user?.username && res.locals.user?.isHost === true) {
+  if (res.locals.user?.username && res.locals.user?.is_host === true) {
     return next();
   }
   throw new UnauthorizedError();
