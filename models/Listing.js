@@ -4,6 +4,7 @@
 const { Sequelize, DataTypes, Model } = require('sequelize');
 const sequelize = require('../db');
 const User = require('./User');
+const Booking = require('./Booking');
 
 const Listing = sequelize.define('Listing', {
   id: {
@@ -63,6 +64,14 @@ User.hasMany(Listing, {
 });
 Listing.belongsTo(User, {
   foreignKey: "host_id"
+});
+
+Listing.hasMany(Booking, {
+  foreignKey: "listing_id",
+  sourceKey: "id"
+});
+Booking.belongsTo(Listing, {
+  foreignKey: "listing_id"
 });
 
 //Many to many

@@ -21,8 +21,10 @@ router.get("/:username", ensureLoggedIn, async function (req, res, next) {
   // const user = await User.findByPk(username);
   const user = await User.findByPk(username, {
     include: {
-      model: Booking
-
+      model: Booking,
+      include:{
+        model: Listing
+      }
     }
   });
 

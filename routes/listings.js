@@ -55,6 +55,7 @@ router.get("/", async function (req, res, next) {
 
 /**TODO: */
 router.get("/:id", async function (req, res, next) {
+  console.log("Get A LISTING")
   const params = req.params.id;
 
   const listing = await Listing.findOne({
